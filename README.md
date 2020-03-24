@@ -1,2 +1,1 @@
-# otsuka-mobile-app
-Otsuka Mobile App
+# slack-photo-upload-challenge
