@@ -1,0 +1,14 @@
+@import "~bootstrap/scss/bootstrap";
+
+
+
+.App {
+  text-align: center;
+  width: 70%;
+  margin: auto;
+}
+
+.day-circle,
+.day-text {
+  cursor: pointer;
+}
