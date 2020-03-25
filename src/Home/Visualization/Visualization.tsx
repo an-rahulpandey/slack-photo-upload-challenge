@@ -5,7 +5,6 @@ import textCoordinates from '../../data/text-coordinates';
 import { CircleCoordinates } from '../../models/CircleCoordinate';
 import { TextCoordinate } from '../../models';
 import DateText from '../Date/DateText';
-// import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Select from 'react-select';
 import DatePicker from 'react-date-picker'
@@ -20,9 +19,10 @@ interface State {
   textCoordinates: TextCoordinate[];
   startDate: Date;
   selectedOption: any;
-  lastDate: Date,
-  selectedDate: Date,
-  imageUrl: string
+  lastDate: Date;
+  selectedDate: Date;
+  imageUrl: string;
+  posts: any[]
 }
 
 interface Props{
@@ -52,7 +52,8 @@ class Visualization extends React.Component<Props, State> {
       selectedOption: '',
       lastDate: new Date(),
       selectedDate: new Date,
-  imageUrl: ''
+      imageUrl: '',
+      posts: []
     };
   }
 
@@ -74,8 +75,9 @@ class Visualization extends React.Component<Props, State> {
   showPost(date: number) {
     alert(`date clicked: ${date}`);
   }
-  onChange() {
-
+  onChange =(date: any) => {
+    console.log(this.state.selectedDate)
+    this.setState({selectedDate: date})
   }
 
   setMaxDate() {
@@ -84,12 +86,35 @@ class Visualization extends React.Component<Props, State> {
   }
 
   addPost = () => {
-    this.props.addPost({
-      date: this.state.selectedDate,
-      hashTag: this.state.selectedOption,
-      image: this.state.imageUrl
-    })
+    let posts = this.state.posts;
+    if (posts.length > 0) {
+      posts.forEach(post => {
+        console.log(post.date, this.state.selectedDate)
+        if (post.date === this.state.selectedDate) {
+          post.images.push(this.state.imageUrl)
+        } else {
+          posts.push({
+            date: this.state.selectedDate,
+            hashTag: this.state.selectedOption,
+            images: [this.state.imageUrl]
+          });
+        }
+      })
+    this.setState({ posts })
+    console.log(this.state)
+
+    } else {
+      posts.push({
+        date: this.state.selectedDate,
+        hashTag: this.state.selectedOption,
+        images: [this.state.imageUrl]
+      });
+    this.setState({ posts })
+      console.log(this.state)
+    }
+
   }
+
 
   render() {
     return (
@@ -2615,7 +2640,7 @@ class Visualization extends React.Component<Props, State> {
                 </g>
               </g>
               <circle id="inner-circle" className="st2" cx="486.3" cy="492.8" r="288.7" />
-              {this.state.circleCoordinates.slice(0, this.state.numbersOfDaysCompleted).map((circle, index) => {
+              {this.state.circleCoordinates.slice(0, this.state.posts.length).map((circle, index) => {
                 return <DayCircle coordinates={circle} key={index} showPost={this.showPost} date={22} startDate={this.state.startDate} index={index} />;
               })}
               {this.state.textCoordinates.map((coordinates, index) => {
