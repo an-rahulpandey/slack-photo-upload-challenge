@@ -5,6 +5,9 @@ import textCoordinates from '../../data/text-coordinates';
 import { CircleCoordinates } from '../../models/CircleCoordinate';
 import { TextCoordinate } from '../../models';
 import DateText from '../Date/DateText';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import Select from 'react-select';
 
 interface State {
   numberOfDaysRemaining: number;
@@ -13,9 +16,20 @@ interface State {
   date: string;
   circleCoordinates: CircleCoordinates[];
   textCoordinates: TextCoordinate[];
-  startDate: string;
+  startDate: Date;
+  selectedOption: any;
 }
-class Visualization extends React.Component<{}, State>{
+
+const options = [
+  { value: 'Whole Food Drink', label: 'Whole Food Drink', className: 'whole-food-drink' },
+  { value: 'Refreshing Drink', label: 'Refreshing Drink', className: 'refreshing-drink' },
+  { value: 'Smoothie', label: 'Smoothie', className: 'smoothie' },
+  { value: 'Soup', label: 'Soup', className: 'soup' },
+  { value: 'Tea', label: 'Tea', className: 'tea' },
+  { value: 'Frozen Treat', label: 'Frozen Treat', className: 'frozen-treat' }
+];
+
+class Visualization extends React.Component<{}, State> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -25,23 +39,40 @@ class Visualization extends React.Component<{}, State>{
       date: 'Wednesday, Mar 26',
       circleCoordinates: circleCoordinates,
       textCoordinates: textCoordinates,
-      startDate: '05/03/2020'
+      startDate: new Date(),
+      selectedOption: ''
     };
   }
 
+  handleDatePickerChange = (date: any) => {
+    this.setState({
+      startDate: date
+    });
+  };
+
+  handleSelectChange = (selectedOption: any) => {
+    this.setState({ selectedOption });
+    console.log(`Option selected:`, selectedOption);
+  };
+
   showPost(date: number) {
-    alert(`date clicked: ${date}`)
+    alert(`date clicked: ${date}`);
   }
 
   render() {
     return (
-      <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" xmlSpace="preserve">
-      <g id="outer-circle">
-        <image
-          width="3538"
-          height="3538"
-          id="XMLID_24_"
-          xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAADdIAAA3SCAYAAACV2rKFAAAACXBIWXMAAC4jAAAuIwF4pT92AAAA
+      <div>
+        <div>
+          <DatePicker selected={this.state.startDate} onChange={this.handleDatePickerChange} />
+          <Select value={this.state.selectedOption} onChange={this.handleSelectChange} options={options} />
+        </div>
+        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" xmlSpace="preserve">
+          <g id="outer-circle">
+            <image
+              width="3538"
+              height="3538"
+              id="XMLID_24_"
+              xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAADdIAAA3SCAYAAACV2rKFAAAACXBIWXMAAC4jAAAuIwF4pT92AAAA
     GXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAS69lJREFUeNrsvcuSJMeZqOcekZl1 6 Qa6AaJBcojhoY0dGhYamxnttNADyEwraX9eQW9wVnoDvYL2RyuZ6QG00E46Y2cWNB4bG + OQQxIA 0 Rd0V1VeIlzx + y08PDwiI + vSXQC + by6VGRcPj8jIzCKrP / uUAgAAAAAAAAAAAAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA + OGiuQQAAAAAAAAAAAAAAADwQ8EYc6e / f + n / 49 Wd 5 / B3 / +v / fucx / vE //oe7X4v/6fmd9tdaG+4oAAAAAAAAAAAAAAAA+KGASAcAAAAAAAAAAAAAAAAP
     wqlS25zEdh9yWol //H//lx/N6/F3/+3/9jDXcEb6O1XmQ94DAAAAAAAAAAAAAACAhwKRDgAAAAAA
     AAAAAAAA4EfOEuFtSnK7q + D2YxLZfuzcVeSbEvaWyHoIegAAAAAAAAAAAAAAAIBIBwAAAAAAAAAA AAAA8D3lNgLcbcQ3ZDd47NxG0iuJecekPIQ8AAAAAAAAAAAAAACA7y + IdAAAAAAAAAAAAAAAAB + Y KSHuLhIc8tuH43 / +H / +HO / 8 N7j / 9n / 8 XwtYH4hQpL5fx5kQ8JDwAAAAAAAAAAAAAAIAPCyIdAAAA AAAAAAAAAADAPbJEilsqxP2YZbj7kNFS / tNVdaf9P ///vn201+qrf/j0btf6sr3X+fyYJcDbSnhT
@@ -2546,155 +2577,156 @@ class Visualization extends React.Component<{}, State>{
     5 LhTxDh9hhXkOJ3vCYKcPoc / YorcYL57EuX0WYIoBwAAAAAAAAAAAAAABRDpAAAAAAAAAAAAAADg KE5JtBM + hmwn3IdwJ0xJdzrnE8U74VT5ThABTzhGwhOKIp7wj7KgdqyQp + uRSXnCywNCmwh658p5 +
     /jTMSLd278N3j7+9p/
     2 VjpG8vsSyIW1Eu9++K9eOHryi6Pa / P6eHSWR3qaEt0guvhn32Hz3za + O br8owEW + Lgt / x8hwev + dIsQJE1KcPmPOFOP0 + XZAjtP7 + RNLkBvM / YQ0Of0sQpQDAAAAAAAAAAAA AIAjQaQDAAAAAAAAAAAAAIB7YUq0Ez412S5yjHQn3FW80zU4IN / petyTgBc5NglvzKSQJ / zjcGrc KYJeWr + RqCe8dHf4KetdL / F9 / 82 v + U3sCP70YyawPV6c1caLgtN0bMpbzl7hLfL1 / qS7YwW4dN2f KsJF7iDE6X2 / R4rT9TtCjNN76Ag5Tp9vH0mQ0 / U4IMnpZwmiHAAAAAAAAAAAAAAAPBD8aAgAAAAA AAAAAAAAAB + Mz1G2i0xJd8I54p1wSL5La3OEhKdrNRGslmS8E0W8nHOlvMheOS / nCFFvzDniHpzG UWJbiQOym3Cq8Da4rs6V3yJBgtNrvCDC6f03P66pQ0KcPhuOlOL0 + fAZiHGDdUKSAwAAAAAAAAAA AACATxx + VAQAAAAAAAAAAAAAgE + OKeFuSrYTPhXhLnKKeCccK99F7lvCG6zlZvrYXRLy9nFXUW + K owU + uJPQNrn + dxXdSuxJgBtc + /MTr/sjRLh0v54gxOn9mklx + nz4DMS4tI4TgpyuWZDkxoKcPreR 5 AAAAAAAAAAAAAAA4BODXw4BAAAAAAAAAAAAAOCzZCzbCcck3AmfmnSXs0 / AE + 5 DwoscK + OlNT1D yktrvjmu3EOJevCByBLehEOym15X8 / O7O0V + 03 vlRAFucL + MZDi9X / cIcXq / fmJS3GDdz0iQ0 + cs ghwAAAAAAAAAAAAAAHymINIBAAAAAAAAAAAAAMAXz5cq3Y05JOEJJRFPOFfGG3OqnJdzF1Fv8vxt uP6PXv / 5 / bd5qui2c13eQXxL12RBgNP75YAEl + 6 ZT1iGG5y / Pclxei72pMfpMxFBDgAAAAAAAAAA AAAAvnAQ6QAAAAAAAAAAAAAAADLuIt1FPif5bswxMl7OlJgXuS9Bb4q7iHtwOvchtu09nxPSm16b R4pv6dr8TAS4KY4V4 / S5hRwHAAAAAAAAAAAAAABwEEQ6AAAAAAAAAAAAAACAMylJd0Iu3gnHyHfC 5 yzgHcOpkt4Uh + S9Qzy03Pe5sE9aO + p8nii2Fc / lZy67HcMhIS7d / 4 hxAAAAAAAAAAAAAAAADwoi HQAAAAAAAAAAAAAAwAfkvuU74UsX8D4m9yX / fSh + DmLax + BYGU7vx0yI03t + QorT + x4xDgAAAAAA AAAAAAAA4IOBSAcAAAAAAAAAAAAAAPAZMCXgRe4i4gnIePClcooEp / fCCSKc3nvIcAAAAAAAAAAA AAAAAJ8FiHQAAAAAAAAAAAAAAAA / Ew7JeMJYyBNOlfIiyHlwKqdKb + laG8lv6ZpHggMAAAAAAAAA AAAAAIAAIh0AAAAAAAAAAAAAAACcxTFinlCS8yLnSnpTIO / dL + eKbZPn50zhLV1LiG8AAAAAAAAA AAAAAABwJoh0AAAAAAAAAAAAAAAA8MlyrKxXYp / Adyz3Lfo9NFOi2klrfqTUtrPeSG4AAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcN / 8 / 0O5 8 gXUXaqgAAAAAElFTkSuQmCC "
-          transform="matrix(0.2397 0 0 0.2397 61.5 74.5)"
-        ></image>
-        <g id="XMLID_17_">
-          <circle id="XMLID_23_" className="st0" cx="485.5" cy="495.5" r="411.5" />
-          <circle id="XMLID_22_" className="st1" cx="485.5" cy="495.5" r="411.5" />
-        </g>
-      </g>
-      <circle id="inner-circle" className="st2" cx="486.3" cy="492.8" r="288.7" />
-      {this.state.circleCoordinates.slice(0, this.state.numbersOfDaysCompleted).map((circle, index) => {
-        return <DayCircle coordinates={circle} key={index} showPost={this.showPost} date={22} startDate={this.state.startDate} index={index} />
-      })}
-      {this.state.textCoordinates.map((coordinates, index) => {
-        return <DateText coordinates={coordinates} key={index} date={22} day={'SUN'} showPost={this.showPost} startDate={this.state.startDate} numberOfDaysCompleted={this.state.numbersOfDaysCompleted} index={index} />;
-      })}
-      <linearGradient id="XMLID_6_" gradientUnits="userSpaceOnUse" x1="117.6" y1="400.3" x2="179" y2="400.3">
-        <stop
-          offset="0.4968"
-          style={{
-            stopColor: '#9AC740'
-          }}
-        />
-        <stop
-          offset="0.4973"
-          style={{
-            stopColor: '#9CC840'
-          }}
-        />
-        <stop
-          offset="0.4975"
-          style={{
-            stopColor: '#A3CA40'
-          }}
-        />
-        <stop
-          offset="0.4977"
-          style={{
-            stopColor: '#AECD40'
-          }}
-        />
-        <stop
-          offset="0.4978"
-          style={{
-            stopColor: '#BFD340'
-          }}
-        />
-        <stop
-          offset="0.4979"
-          style={{
-            stopColor: '#D5DA40'
-          }}
-        />
-        <stop
-          offset="0.498"
-          style={{
-            stopColor: '#F0E240'
-          }}
-        />
-        <stop
-          offset="0.498"
-          style={{
-            stopColor: '#FFE740'
-          }}
-        />
-      </linearGradient>
-      <linearGradient id="XMLID_7_" gradientUnits="userSpaceOnUse" x1="108.2667" y1="474" x2="169.6667" y2="474">
-        <stop
-          offset="0.4968"
-          style={{
-            stopColor: '#9AC740'
-          }}
-        />
-        <stop
-          offset="0.4973"
-          style={{
-            stopColor: '#9AC642'
-          }}
-        />
-        <stop
-          offset="0.4975"
-          style={{
-            stopColor: '#99C349'
-          }}
-        />
-        <stop
-          offset="0.4976"
-          style={{
-            stopColor: '#99BE54'
-          }}
-        />
-        <stop
-          offset="0.4977"
-          style={{
-            stopColor: '#98B765'
-          }}
-        />
-        <stop
-          offset="0.4978"
-          style={{
-            stopColor: '#96AD7B'
-          }}
-        />
-        <stop
-          offset="0.4979"
-          style={{
-            stopColor: '#94A297'
-          }}
-        />
-        <stop
-          offset="0.4979"
-          style={{
-            stopColor: '#9294B6'
-          }}
-        />
-        <stop
-          offset="0.498"
-          style={{
-            stopColor: '#9085D9'
-          }}
-        />
-      </linearGradient>
-      <path id="XMLID_5_" className="st2" d="M729.4,337c45.7,20.8,76.6,0.3,76.6,0.3s29.3-16.5,23.3-67" />
-      <circle className="st17" cx="489.5" cy="315.5" r="30.5" />
-      <text transform="matrix(1 0 0 1 366.439 401.3)" className="st18 st12 st19">
-        {this.state.date}
-      </text>
-      <text transform="matrix(1 0 0 1 223.7432 501.3)" className="st18 st12 st20">
-        30 Day Challenge
-      </text>
-      <g id="button">
-        <path
-          id="button-bg"
-          className="st21"
-          d="M616,595.7H359.7c-15.8,0-28.7-12.9-28.7-28.7v0c0-15.8,12.9-28.7,28.7-28.7H616
+              transform="matrix(0.2397 0 0 0.2397 61.5 74.5)"
+            ></image>
+            <g id="XMLID_17_">
+              <circle id="XMLID_23_" className="st0" cx="485.5" cy="495.5" r="411.5" />
+              <circle id="XMLID_22_" className="st1" cx="485.5" cy="495.5" r="411.5" />
+            </g>
+          </g>
+          <circle id="inner-circle" className="st2" cx="486.3" cy="492.8" r="288.7" />
+          {this.state.circleCoordinates.slice(0, this.state.numbersOfDaysCompleted).map((circle, index) => {
+            return <DayCircle coordinates={circle} key={index} showPost={this.showPost} date={22} startDate={this.state.startDate} index={index} />;
+          })}
+          {this.state.textCoordinates.map((coordinates, index) => {
+            return <DateText coordinates={coordinates} key={index} date={22} day={'SUN'} showPost={this.showPost} startDate={this.state.startDate} numberOfDaysCompleted={this.state.numbersOfDaysCompleted} index={index} />;
+          })}
+          <linearGradient id="XMLID_6_" gradientUnits="userSpaceOnUse" x1="117.6" y1="400.3" x2="179" y2="400.3">
+            <stop
+              offset="0.4968"
+              style={{
+                stopColor: '#9AC740'
+              }}
+            />
+            <stop
+              offset="0.4973"
+              style={{
+                stopColor: '#9CC840'
+              }}
+            />
+            <stop
+              offset="0.4975"
+              style={{
+                stopColor: '#A3CA40'
+              }}
+            />
+            <stop
+              offset="0.4977"
+              style={{
+                stopColor: '#AECD40'
+              }}
+            />
+            <stop
+              offset="0.4978"
+              style={{
+                stopColor: '#BFD340'
+              }}
+            />
+            <stop
+              offset="0.4979"
+              style={{
+                stopColor: '#D5DA40'
+              }}
+            />
+            <stop
+              offset="0.498"
+              style={{
+                stopColor: '#F0E240'
+              }}
+            />
+            <stop
+              offset="0.498"
+              style={{
+                stopColor: '#FFE740'
+              }}
+            />
+          </linearGradient>
+          <linearGradient id="XMLID_7_" gradientUnits="userSpaceOnUse" x1="108.2667" y1="474" x2="169.6667" y2="474">
+            <stop
+              offset="0.4968"
+              style={{
+                stopColor: '#9AC740'
+              }}
+            />
+            <stop
+              offset="0.4973"
+              style={{
+                stopColor: '#9AC642'
+              }}
+            />
+            <stop
+              offset="0.4975"
+              style={{
+                stopColor: '#99C349'
+              }}
+            />
+            <stop
+              offset="0.4976"
+              style={{
+                stopColor: '#99BE54'
+              }}
+            />
+            <stop
+              offset="0.4977"
+              style={{
+                stopColor: '#98B765'
+              }}
+            />
+            <stop
+              offset="0.4978"
+              style={{
+                stopColor: '#96AD7B'
+              }}
+            />
+            <stop
+              offset="0.4979"
+              style={{
+                stopColor: '#94A297'
+              }}
+            />
+            <stop
+              offset="0.4979"
+              style={{
+                stopColor: '#9294B6'
+              }}
+            />
+            <stop
+              offset="0.498"
+              style={{
+                stopColor: '#9085D9'
+              }}
+            />
+          </linearGradient>
+          <path id="XMLID_5_" className="st2" d="M729.4,337c45.7,20.8,76.6,0.3,76.6,0.3s29.3-16.5,23.3-67" />
+          <circle className="st17" cx="489.5" cy="315.5" r="30.5" />
+          <text transform="matrix(1 0 0 1 366.439 401.3)" className="st18 st12 st19">
+            {this.state.date}
+          </text>
+          <text transform="matrix(1 0 0 1 223.7432 501.3)" className="st18 st12 st20">
+            30 Day Challenge
+          </text>
+          <g id="button">
+            <path
+              id="button-bg"
+              className="st21"
+              d="M616,595.7H359.7c-15.8,0-28.7-12.9-28.7-28.7v0c0-15.8,12.9-28.7,28.7-28.7H616
     c15 .8, 0, 28.7, 12.9, 28.7, 28.7 v0C644 .7, 582.8, 631.8, 595.7, 616, 595.7 z "
-        />
-        <text transform="matrix(1 0 0 1 367.9795 576.0002)" className="st0 st12 st22">
-          {this.state.numberOfDaysRemaining} {' '}
-          Days Remaining
-        </text>
-      </g>
-      <text transform="matrix(1 0 0 1 309.9102 654.3)" className="st21 st12 st19">
-        Keep it going
-      </text>
-      <text transform="matrix(1 0 0 1 536.0677 661.3002)" className="st21 st12 st23">
-        {' '}{this.state.percentCompleted} %
-      </text>
-      </svg>
-  )
-}
+            />
+            <text transform="matrix(1 0 0 1 367.9795 576.0002)" className="st0 st12 st22">
+              {this.state.numberOfDaysRemaining} Days Remaining
+            </text>
+          </g>
+          <text transform="matrix(1 0 0 1 309.9102 654.3)" className="st21 st12 st19">
+            Keep it going
+          </text>
+          <text transform="matrix(1 0 0 1 536.0677 661.3002)" className="st21 st12 st23">
+            {' '}
+            {this.state.percentCompleted} %
+          </text>
+        </svg>
+      </div>
+    );
+  }
 }
 
 export default Visualization;
