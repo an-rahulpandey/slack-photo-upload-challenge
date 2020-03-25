@@ -4,16 +4,30 @@ import Visualization from './Visualization/Visualization';
 import PostCarousel from './PostCarousel/PostCarousel';
 import ColorViz from './ColorViz/ColorViz';
 
-interface State { }
+interface State {
+  posts: any[]
+ }
 
 class Home extends React.Component<{}, State> {
 
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      posts: []
+    }
+}
+  addPost = (data: any) => {
+    let posts = this.state.posts;
+    posts.push(data);
+    this.setState({ posts })
+    console.log(this.state)
+  }
 
   render() {
     return (
       <div>
         <ColorViz />
-        <Visualization />
+        <Visualization addPost={this.addPost}/>
         <PostCarousel />
         </div>
     );
