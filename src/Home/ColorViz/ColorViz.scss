@@ -1,8 +1,8 @@
-.color-viz{
+.color-viz {
   display: flex;
   justify-content: center;
 
-  .color-viz-block{
+  .color-viz-block {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -10,13 +10,13 @@
     width: 80px;
   }
 
-  .color-circle{
+  .color-circle {
     height: 50px;
     width: 50px;
     border-radius: 50%;
   }
 
-  .name{
+  .name {
     font-size: 12px;
   }
 
@@ -40,7 +40,7 @@
     background-color: #9085D9;
   }
 
-  .tea{
+  .tea {
     background-color: #AF895F;
   }
 

@@ -1,13 +1,14 @@
 import React from 'react';
 import DayCircle from '../DayCircle/DayCircle';
+import PostCarousel from '../PostCarousel/PostCarousel';
 import circleCoordinates from '../../data/circle-coordinates';
 import textCoordinates from '../../data/text-coordinates';
 import { CircleCoordinates } from '../../models/CircleCoordinate';
 import { TextCoordinate } from '../../models';
 import DateText from '../Date/DateText';
-import 'react-datepicker/dist/react-datepicker.css';
+import 'react-date-picker/dist/DatePicker.css';
 import Select from 'react-select';
-import DatePicker from 'react-date-picker'
+import DatePicker from 'react-date-picker';
 import moment from 'moment';
 
 interface State {
@@ -22,11 +23,11 @@ interface State {
   lastDate: Date;
   selectedDate: Date;
   imageUrl: string;
-  posts: any[]
+  posts: any[];
 }
 
-interface Props{
-  addPost(data: any): void
+interface Props {
+  addPost(data: any): void;
 }
 
 const options = [
@@ -38,12 +39,39 @@ const options = [
   { value: 'Frozen Treat', label: 'Frozen Treat', className: 'frozen-treat' }
 ];
 
+// const images = [{ date: '', hashTags: '', images: [] }];
+// /**
+//  * Posts data
+//  */
+const images = [
+  {
+    date: '03/25/2020',
+    image: 'https://images.unsplash.com/photo-1497888329096-51c27beff665?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1351&q=80'
+  },
+  {
+    date: '03/26/2020',
+    image: 'https://images.unsplash.com/photo-1550133730-695473e544be?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    date: '03/27/2020',
+    image: 'https://images.unsplash.com/photo-1550167164-1b67c2be3973?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    date: '03/28/2020',
+    image: 'https://images.unsplash.com/photo-1550338861-b7cfeaf8ffd8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    date: '03/29/2020',
+    image: 'https://images.unsplash.com/photo-1550223640-23097fc71cb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+  }
+];
+
 class Visualization extends React.Component<Props, State> {
   constructor(props: any) {
     super(props);
     this.state = {
-      numberOfDaysRemaining: 7,
-      numbersOfDaysCompleted: 23,
+      numberOfDaysRemaining: 30,
+      numbersOfDaysCompleted: 0,
       percentCompleted: 80.12,
       date: 'Wednesday, Mar 26',
       circleCoordinates: circleCoordinates,
@@ -51,14 +79,14 @@ class Visualization extends React.Component<Props, State> {
       startDate: new Date(),
       selectedOption: '',
       lastDate: new Date(),
-      selectedDate: new Date,
+      selectedDate: new Date(),
       imageUrl: '',
       posts: []
     };
   }
 
   componentDidMount() {
-    this.setMaxDate()
+    this.setMaxDate();
   }
 
   handleDatePickerChange = (date: any) => {
@@ -75,46 +103,58 @@ class Visualization extends React.Component<Props, State> {
   showPost(date: number) {
     alert(`date clicked: ${date}`);
   }
-  onChange =(date: any) => {
-    console.log(this.state.selectedDate)
-    this.setState({selectedDate: date})
-  }
+  onChange = (date: any) => {
+    console.log(this.state.selectedDate);
+    this.setState({ selectedDate: date });
+  };
+
+  handleChange = (event: any) => {
+    console.log('Visualization -> handleChange -> event', event.target.value);
+    this.setState({ imageUrl: event.target.value });
+  };
 
   setMaxDate() {
-    this.setState({ lastDate: moment(this.state.startDate).add('days', 30).toDate() })
-    console.log(this.state)
+    this.setState({
+      lastDate: moment(this.state.startDate)
+        .add('days', 30)
+        .toDate()
+    });
+    console.log(this.state);
   }
 
   addPost = () => {
     let posts = this.state.posts;
+    this.setState({ numbersOfDaysCompleted: this.state.posts.length });
+    let numbersOfDaysRemaining = this.state.numberOfDaysRemaining - 1;
+    this.setState({ numberOfDaysRemaining: numbersOfDaysRemaining });
+
     if (posts.length > 0) {
       posts.forEach(post => {
-        console.log(post.date, this.state.selectedDate)
+        console.log(post.date, this.state.selectedDate);
         if (post.date === this.state.selectedDate) {
-          post.images.push(this.state.imageUrl)
+          console.log('if');
+          post.images.push(this.state.imageUrl);
         } else {
+          console.log('else');
           posts.push({
             date: this.state.selectedDate,
             hashTag: this.state.selectedOption,
             images: [this.state.imageUrl]
           });
         }
-      })
-    this.setState({ posts })
-    console.log(this.state)
-
+      });
+      this.setState({ posts });
+      console.log(this.state);
     } else {
       posts.push({
         date: this.state.selectedDate,
         hashTag: this.state.selectedOption,
         images: [this.state.imageUrl]
       });
-    this.setState({ posts })
-      console.log(this.state)
+      this.setState({ posts });
+      console.log(this.state);
     }
-
-  }
-
+  };
 
   render() {
     return (
@@ -2644,7 +2684,9 @@ class Visualization extends React.Component<Props, State> {
                 return <DayCircle coordinates={circle} key={index} showPost={this.showPost} date={22} startDate={this.state.startDate} index={index} />;
               })}
               {this.state.textCoordinates.map((coordinates, index) => {
-                return <DateText coordinates={coordinates} key={index} date={22} day={'SUN'} showPost={this.showPost} startDate={this.state.startDate} numberOfDaysCompleted={this.state.numbersOfDaysCompleted} index={index} />;
+                return (
+                  <DateText coordinates={coordinates} key={index} date={22} day={'SUN'} posts={this.state.posts} showPost={this.showPost} startDate={this.state.startDate} numberOfDaysCompleted={this.state.numbersOfDaysCompleted} index={index} />
+                );
               })}
               <linearGradient id="XMLID_6_" gradientUnits="userSpaceOnUse" x1="117.6" y1="400.3" x2="179" y2="400.3">
                 <stop
@@ -2759,7 +2801,7 @@ class Visualization extends React.Component<Props, State> {
               </text>
               <text transform="matrix(1 0 0 1 223.7432 501.3)" className="st18 st12 st20">
                 30 Day Challenge
-          </text>
+              </text>
               <g id="button">
                 <path
                   id="button-bg"
@@ -2769,48 +2811,33 @@ class Visualization extends React.Component<Props, State> {
                 />
                 <text transform="matrix(1 0 0 1 367.9795 576.0002)" className="st0 st12 st22">
                   {this.state.numberOfDaysRemaining} Days Remaining
-            </text>
+                </text>
               </g>
               <text transform="matrix(1 0 0 1 309.9102 654.3)" className="st21 st12 st19">
                 Keep it going
-          </text>
+              </text>
               <text transform="matrix(1 0 0 1 536.0677 661.3002)" className="st21 st12 st23">
                 {' '}
                 {this.state.percentCompleted} %
-          </text>
+              </text>
             </svg>
           </div>
           <div className="col-4 text-left">
             <label htmlFor="date">Select Date</label>
-            <DatePicker
-              onChange={this.onChange}
-              value={this.state.selectedDate}
-              minDate={this.state.startDate}
-              maxDate={this.state.lastDate}
-              className="mb-3"
-            />
+            <DatePicker onChange={this.onChange} value={this.state.selectedDate} minDate={this.state.startDate} maxDate={this.state.lastDate} className="mb-3" />
             <label htmlFor="date">Select Hashtag</label>
 
             <Select value={this.state.selectedOption} onChange={this.handleSelectChange} options={options} className="mb-3" />
 
             <label htmlFor="date">Enter Image URL</label>
 
-            <input
-                              type="text"
-                              name="last_name"
-              className="form-control"
-              value={this.state.imageUrl}
-            />
-            <button
-              type="button"
-              className="btn btn-primary mt-2"
-              onClick={this.addPost}
-                      >
-                        Add
-                      </button>
+            <input type="text" name="last_name" className="form-control" onChange={this.handleChange} />
+            <button type="button" className="btn btn-primary mt-2" onClick={this.addPost}>
+              Add
+            </button>
           </div>
         </div>
-
+        <PostCarousel images={images} />
       </div>
     );
   }
