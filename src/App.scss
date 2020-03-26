@@ -4,7 +4,7 @@
 
 .App {
   text-align: center;
-  width: 70%;
+  width: 90%;
   margin: auto;
 }
 
@@ -24,4 +24,11 @@
 .react-date-picker__wrapper{
   border-radius: 5px;
   border: 1px solid rgb(211, 211, 211);
+}
+
+.form-block {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: center;
 }

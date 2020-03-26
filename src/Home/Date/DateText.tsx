@@ -11,6 +11,7 @@ interface Props {
   index: number;
   numberOfDaysCompleted: number;
   posts: any;
+  post: any
 }
 
 interface State {
@@ -49,7 +50,10 @@ class DateText extends React.Component<Props, State> {
    * @returns void
    */
   dateClicked = (date: number): void => {
-    this.props.showPost(this.state.date);
+    if (this.props.post && this.props.post.image) {
+      this.props.showPost(this.props.post);
+
+    }
   };
 
   /**
@@ -65,10 +69,10 @@ class DateText extends React.Component<Props, State> {
     return (
       <text
         transform={`matrix(1 0 0 1 ${this.props.coordinates.t1x} ${this.props.coordinates.t1y})`}
+        className={`${this.getClassName()} day-text`}
         onClick={() => {
           this.dateClicked(this.props.date);
         }}
-        className={`${this.getClassName()} day-text`}
       >
         <tspan x="0" y="0" className="st11 st12 st13">
           {this.state.date}

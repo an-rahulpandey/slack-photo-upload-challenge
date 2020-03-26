@@ -10,9 +10,14 @@ interface Props{
 class Post extends React.Component<Props, {}>{
   constructor(props: any) {
     super(props);
+    console.log(props)
   }
   hideModel = () => {
     this.props.hidePost()
+  }
+
+  componentWillUpdate = (nextProps: any, nextState: any) => {
+  console.log(nextProps)
   }
   render() {
 

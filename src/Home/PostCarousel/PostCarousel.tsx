@@ -12,6 +12,7 @@ interface State {
 
 interface Props {
   images: any;
+  posts: any;
 }
 
 class PostCarousel extends React.Component<Props, State> {
@@ -51,7 +52,12 @@ class PostCarousel extends React.Component<Props, State> {
    * @returns void
    */
   showPost = (post: any): void => {
-    this.setState({ selectedPost: post, showPostModal: true });
+    const p = {
+      date: this.props.posts.date,
+      image: post
+    }
+    this.setState({ selectedPost: p, showPostModal: true });
+    console.log(this.state)
   };
 
   /**
@@ -72,22 +78,22 @@ class PostCarousel extends React.Component<Props, State> {
   };
 
   render() {
-    console.log('props', this.props.images);
+    console.log('props', this.props);
     return (
       <div>
         <Post show={this.state.showPostModal} selectedPost={this.state.selectedPost} hidePost={this.hidePost} />
         <Carousel ssr itemClass="image-item" responsive={this.responsive} className="post-carousel">
-          {this.props.images.map((image: any) => {
+          {this.props.posts.images.map((image: any) => {
             return (
               <div>
-                <div className="date">{this.getDate(image.date)}</div>
+                <div className="date">{this.getDate(this.props.posts.date)}</div>
                 <img
                   draggable={false}
                   onClick={() => {
                     this.showPost(image);
                   }}
                   style={{ width: '100%', height: '100%', cursor: 'pointer' }}
-                  src={image.image}
+                  src={image}
                   alt=""
                 />
               </div>

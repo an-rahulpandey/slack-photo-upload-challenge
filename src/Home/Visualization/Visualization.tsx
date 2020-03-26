@@ -11,6 +11,9 @@ import Select from 'react-select';
 import DatePicker from 'react-date-picker';
 import moment from 'moment';
 
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 interface State {
   numberOfDaysRemaining: number;
   numbersOfDaysCompleted: number;
@@ -24,6 +27,8 @@ interface State {
   selectedDate: Date;
   imageUrl: string;
   posts: any[];
+  images: string[];
+  selectedPost: any
 }
 
 interface Props {
@@ -76,12 +81,18 @@ class Visualization extends React.Component<Props, State> {
       date: 'Wednesday, Mar 26',
       circleCoordinates: circleCoordinates,
       textCoordinates: textCoordinates,
-      startDate: new Date(),
+      startDate: moment(new Date()).add('days', 1).toDate(),
       selectedOption: '',
       lastDate: new Date(),
       selectedDate: new Date(),
       imageUrl: '',
-      posts: []
+      posts: [],
+      images: [],
+      selectedPost: {
+        date: '',
+        hashTag: '',
+        images: []
+      }
     };
   }
 
@@ -97,19 +108,24 @@ class Visualization extends React.Component<Props, State> {
 
   handleSelectChange = (selectedOption: any) => {
     this.setState({ selectedOption });
-    console.log(`Option selected:`, selectedOption);
+    // console.log(`Option selected:`, selectedOption);
   };
 
-  showPost(date: number) {
-    alert(`date clicked: ${date}`);
-  }
+  showPost = (post: any) => {
+    console.log("Visualization -> showPost -> post", post);
+    this.setState({ selectedPost: post })
+setTimeout(() => {
+  console.log(this.state.selectedPost)
+
+}, 500);  }
   onChange = (date: any) => {
-    console.log(this.state.selectedDate);
-    this.setState({ selectedDate: date });
+    const d = moment(date).add('days', 0).toDate();
+    console.log("Visualization -> onChange -> d", d);
+    this.setState({selectedDate: d})
   };
 
   handleChange = (event: any) => {
-    console.log('Visualization -> handleChange -> event', event.target.value);
+    // console.log('Visualization -> handleChange -> event', event.target.value);
     this.setState({ imageUrl: event.target.value });
   };
 
@@ -122,6 +138,14 @@ class Visualization extends React.Component<Props, State> {
     console.log(this.state);
   }
 
+  addImages = () => {
+    const image = this.state.imageUrl;
+    const images = this.state.images;
+    images.push(image);
+    this.setState({ images, imageUrl: '' })
+    console.log(this.state)
+  }
+
   addPost = () => {
     let posts = this.state.posts;
     this.setState({ numbersOfDaysCompleted: this.state.posts.length });
@@ -129,38 +153,47 @@ class Visualization extends React.Component<Props, State> {
     this.setState({ numberOfDaysRemaining: numbersOfDaysRemaining });
 
     if (posts.length > 0) {
-      posts.forEach(post => {
-        console.log(post.date, this.state.selectedDate);
+      posts.forEach((post, index) => {
+        console.log(post.date, this.state.selectedDate)
         if (post.date === this.state.selectedDate) {
-          console.log('if');
           post.images.push(this.state.imageUrl);
         } else {
-          console.log('else');
-          posts.push({
-            date: this.state.selectedDate,
-            hashTag: this.state.selectedOption,
-            images: [this.state.imageUrl]
-          });
+          if (posts.length == index + 1) {
+            let p = {
+              date: this.state.selectedDate,
+              hashTag: this.state.selectedOption,
+              images: this.state.images
+            }
+            if (this.state.imageUrl) {
+              p.images.push(this.state.imageUrl)
+            }
+            console.log("pushiing the item")
+            posts.push(p);
+          }
         }
       });
-      this.setState({ posts });
-      console.log(this.state);
+      this.setState({ posts, images: [], selectedOption: '', date: '' });
     } else {
-      posts.push({
+      let p = {
         date: this.state.selectedDate,
         hashTag: this.state.selectedOption,
-        images: [this.state.imageUrl]
-      });
-      this.setState({ posts });
-      console.log(this.state);
+        images: this.state.images
+      }
+      if (this.state.imageUrl) {
+        p.images.push(this.state.imageUrl)
+      }
+      posts.push(p);
+      this.setState({ posts, images: [], selectedOption: '', date: '' });
     }
+
+    console.log(this.state)
   };
 
   render() {
     return (
       <div>
         <div className="row">
-          <div className="col-8">
+          <div className="col-9">
             <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" xmlSpace="preserve">
               <g id="outer-circle">
                 <image
@@ -2681,11 +2714,11 @@ class Visualization extends React.Component<Props, State> {
               </g>
               <circle id="inner-circle" className="st2" cx="486.3" cy="492.8" r="288.7" />
               {this.state.circleCoordinates.slice(0, this.state.posts.length).map((circle, index) => {
-                return <DayCircle coordinates={circle} key={index} showPost={this.showPost} date={22} startDate={this.state.startDate} index={index} />;
+                return <DayCircle coordinates={circle} post={this.state.posts[index]} key={index} showPost={this.showPost} date={22} startDate={this.state.startDate} index={index} />;
               })}
               {this.state.textCoordinates.map((coordinates, index) => {
                 return (
-                  <DateText coordinates={coordinates} key={index} date={22} day={'SUN'} posts={this.state.posts} showPost={this.showPost} startDate={this.state.startDate} numberOfDaysCompleted={this.state.numbersOfDaysCompleted} index={index} />
+                  <DateText coordinates={coordinates} key={index} date={22} day={'SUN'} post={this.state.posts[index]} posts={this.state.posts} showPost={this.showPost} startDate={this.state.startDate} numberOfDaysCompleted={this.state.numbersOfDaysCompleted} index={index} />
                 );
               })}
               <linearGradient id="XMLID_6_" gradientUnits="userSpaceOnUse" x1="117.6" y1="400.3" x2="179" y2="400.3">
@@ -2797,7 +2830,7 @@ class Visualization extends React.Component<Props, State> {
               <path id="XMLID_5_" className="st2" d="M729.4,337c45.7,20.8,76.6,0.3,76.6,0.3s29.3-16.5,23.3-67" />
               <circle className="st17" cx="489.5" cy="315.5" r="30.5" />
               <text transform="matrix(1 0 0 1 366.439 401.3)" className="st18 st12 st19">
-                {this.state.date}
+                {moment().format('dddd, MMM D')}
               </text>
               <text transform="matrix(1 0 0 1 223.7432 501.3)" className="st18 st12 st20">
                 30 Day Challenge
@@ -2822,7 +2855,7 @@ class Visualization extends React.Component<Props, State> {
               </text>
             </svg>
           </div>
-          <div className="col-4 text-left">
+          <div className="col-3 text-left form-block">
             <label htmlFor="date">Select Date</label>
             <DatePicker onChange={this.onChange} value={this.state.selectedDate} minDate={this.state.startDate} maxDate={this.state.lastDate} className="mb-3" />
             <label htmlFor="date">Select Hashtag</label>
@@ -2830,14 +2863,32 @@ class Visualization extends React.Component<Props, State> {
             <Select value={this.state.selectedOption} onChange={this.handleSelectChange} options={options} className="mb-3" />
 
             <label htmlFor="date">Enter Image URL</label>
+            <div className="row">
+              <div className="col-10">
+                <input type="text" name="last_name" value={this.state.imageUrl} className="form-control" onChange={this.handleChange} />
 
-            <input type="text" name="last_name" className="form-control" onChange={this.handleChange} />
+              </div>
+              <div className="col-2 flex-center pointer" onClick={this.addImages}>
+                <FontAwesomeIcon
+                  className="fa-icon user-icon mr-3"
+                  icon={faPlus}
+                />
+              </div>
+            </div>
+            <div className="row">
+
+                {this.state.images.map(image => {
+                 return <div className="col-12">
+                    <a href={image}>{image}</a>
+                 </div>
+                })}
+            </div>
             <button type="button" className="btn btn-primary mt-2" onClick={this.addPost}>
-              Add
+              Save
             </button>
           </div>
         </div>
-        <PostCarousel images={images} />
+        <PostCarousel images={images} posts={this.state.selectedPost}/>
       </div>
     );
   }

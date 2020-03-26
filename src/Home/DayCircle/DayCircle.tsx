@@ -7,6 +7,7 @@ interface Props {
   date: number;
   startDate: any;
   index: number;
+  post: any
 }
 
 interface State{
@@ -34,7 +35,7 @@ class DayCircle extends React.Component<Props, State> {
    * @returns void
    */
   clicked = (date: number): void => {
-    this.props.showPost(this.state.date)
+    this.props.showPost(this.props.post)
   }
 
 
